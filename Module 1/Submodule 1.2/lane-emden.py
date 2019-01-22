@@ -13,9 +13,9 @@ plt.rc('axes', labelsize=16)
 plt.rcParams.update({'figure.autolayout': True})
 
 stepsize = 0.001
-filename = "assignment1a1.pdf"
+filename = "assignment1b1.pdf"
 
-n = 1.5
+n = 3.0
 
 def f(x, y, z):
     return z;
