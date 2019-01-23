@@ -110,4 +110,6 @@ def ode_rk4(x_start, x_end, h, y0, z0, f, g):
         y[i+1] = y[i] + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0
         z[i+1] = z[i] + (l1 + 2.0 * l2 + 2.0 * l3 + l4) / 6.0
 
+        if(y[i+1] < 0.001 * y0):
+            return x[y > 0],y[y > 0],z[y > 0]
     return x, y, z
