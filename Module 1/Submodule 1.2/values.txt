@@ -1,0 +1,17 @@
+Part A:
+Eta_s: 3.653
+Mass: 2.714
+Rho_c: 4.046205e6
+R: 0.012 solar radii
+
+Part B:
+Eta_s: 6.896
+Mass: 2.018
+
+Part C:
+Eta_s: 5.426
+Mass: 1.451
+Rho_c: 3.736
+Radius: 5.3e7 m
+
+Stable Mass: 1.45 Solar Masses
