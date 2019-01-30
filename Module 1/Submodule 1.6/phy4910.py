@@ -32,7 +32,22 @@ def plot_print(x, f, filename, xlabel="", ylabel=""):
     plt.savefig(filename)
     
 
-def ode_euler(x_start, x_end, h, y0, z0, f, g):
+def ode_euler(x_start, x_end, h, y0, z0, f, g, stop = lambda x,y,z,data:False , data = None):
+
+	"""
+	Solves a coupled pair of ODEs using euler
+	 
+	Takes as arguments:
+	  x_start - starting point for independent coordinate
+	  x_end - ending point
+	  h - difference between x_i and x_i+1 (i.e., delat x)
+	  y0 - initial value for first variable y(x_start)
+	  z_0 - initial value for second variable z(x_start)
+	  f - function for derivative of first variable (i.e., f = dy/dx)
+	  g - function for deriviative of second variable (i.e., g = dz/dx)
+	  stop - a function for a stopping criteria.  Function must take three number (x, y, z, data).
+	  returns three arrays, x[0,N-1], y[0,N-1], and z[0,N-1].
+	"""
     
     x = np.arange(x_start, x_end, h)
     N = len(x)
@@ -42,6 +57,10 @@ def ode_euler(x_start, x_end, h, y0, z0, f, g):
     z[0] = z0
     
     for i in range(0, N-1):
+
+		if stop(x[i],y[i],z[i],data) == True:
+			return x[0:i], y[0:i], z[0:i]			
+	
         k1 = h * f(x[i], y[i], z[i])
         l1 = h * g(x[i], y[i], z[i])
             
@@ -50,7 +69,25 @@ def ode_euler(x_start, x_end, h, y0, z0, f, g):
                 
     return x, y, z
     
-def ode_rk4(x_start, x_end, h, y0, z0, f, g):
+def ode_rk4(x_start, x_end, h, y0, z0, f, g, stop = lambda x,y,z,data:False , data = None):
+
+	""" 
+	Solves a coupled pair of ODEs using runge kutta.
+	 
+	Takes as arguments:
+	  x_start - starting point for independent coordinate
+	  x_end - ending point
+	  h - difference between x_i and x_i+1 (i.e., delat x)
+	  y0 - initial value for first variable y(x_start)
+	  z_0 - initial value for second variable z(x_start)
+	  f - function for derivative of first variable (i.e., f = dy/dx)
+	  g - function for deriviative of second variable (i.e., g = dz/dx)
+	  stop - a function for a stopping criteria.  Function must take three number (x, y, z, data).
+	  data - any data that needs to be passed to the stop function in addition to xi, yi, zi.
+	  
+	  returns three arrays, x[0,N-1], y[0,N-1], and z[0,N-1].
+
+	"""
     
     x = np.arange(x_start, x_end, h)
     N = len(x)
@@ -60,6 +97,11 @@ def ode_rk4(x_start, x_end, h, y0, z0, f, g):
     z[0] = z0
     
     for i in range(0, N-1):
+
+
+		if stop(x[i] ,y[i] ,z[i] ,data) == True:
+			return x[0:i], y[0:i], z[0:i]
+
         k1 = h * f(x[i], y[i], z[i])
         l1 = h * g(x[i], y[i], z[i])
         k2 = h * f(x[i] + 0.5 * h, y[i] + 0.5 * k1, z[i] + 0.5 * l1)
