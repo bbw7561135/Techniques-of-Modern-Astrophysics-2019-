@@ -45,33 +45,8 @@ def move_photon(tau_max = 10.0, z_max = 1.0):
             
 
 Nphotons = 10000
-Nbins = 20
-bins = np.zeros(Nbins)
+
 for i in range(Nphotons):
     x, y, z, cos_theta, sin_theta, cos_phi, sin_phi = move_photon()
-    #print i, cos_theta
-    pos = int(cos_theta * Nbins)
-    bins[pos] += 1
-    
-angles = np.zeros(Nbins)
-intensity = np.zeros(Nbins)
-for i in range(Nbins):
-    mu = 0.5 * 1.0 / Nbins + i * 1.0/Nbins
-    angles[i] = np.arccos(mu)
-    intensity[i] = bins[i] / (2.0 * Nphotons * np.cos(angles[i])) * Nbins
-    
-    print( angles[i], intensity[i])
-    
-angles = angles * 180.0 / np.pi
+    print(i, cos_theta)
 
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
-ax.plot(angles, intensity, color="black", marker='o', linestyle='none')
-ax.set_xlabel(r'$\theta$')
-ax.set_ylabel(r'Normalized Intensity')
-
-
-I_theory = 0.5 + 0.75 * np.cos(angles / 180.0 * np.pi)
-ax.plot(angles, I_theory, '-')
-plt.show()
-#plt.savefig("rad_trans_2.pdf")
