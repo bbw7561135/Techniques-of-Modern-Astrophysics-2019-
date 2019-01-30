@@ -1,5 +1,14 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib import rc
+
+rc('text', usetex=True)
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
+matplotlib.rcParams['font.family'] = 'STIXGeneral'
+plt.rcParams.update({'font.size':14})
+plt.rc('axes', labelsize=16)
+plt.rcParams.update({'figure.autolayout': True})
 
 
 def plot(x, f, xlabel="", ylabel=""):
