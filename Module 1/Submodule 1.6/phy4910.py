@@ -3,33 +3,43 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import rc
 
-rc('text', usetex=True)
+"""rc('text', usetex=True)
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 plt.rcParams.update({'font.size':14})
 plt.rc('axes', labelsize=16)
-plt.rcParams.update({'figure.autolayout': True})
+plt.rcParams.update({'figure.autolayout': True})"""
 
 
 def plot(x, f, xlabel="", ylabel=""):
-        
-    fig = plt.figure(figsize=(6, 4))
-    ax = fig.add_subplot(1,1,1)
-    ax.grid(True)
-    ax.plot(x, f, color="black")
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    plt.show()
+	"""
+	This function will help plot an list of arrays. 
+	plot(x, f, xlabel="", ylabel="")
+	Where x is the independent variable. f is a list of dependent variables. Using this function you can plot multiple dependent variables  	against x
+	"""
+	fig = plt.figure(figsize=(6, 4))
+	ax = fig.add_subplot(1,1,1)
+	ax.grid(True)
+	for i in range(len(f)):     
+		ax.plot(x, f[i])
+	ax.set_xlabel(xlabel)
+	ax.set_ylabel(ylabel)
+	plt.show()
     
 
 def plot_print(x, f, filename, xlabel="", ylabel=""):
-        
-    fig = plt.figure(figsize=(6, 4))
-    ax = fig.add_subplot(1,1,1)
-    ax.plot(x, f, color="black")
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    plt.savefig(filename)
+	"""
+	This function will help plot an list of arrays. 
+	plot_print(x, f, filename, xlabel="", ylabel="")
+	Where x is the independent variable. f is a list of dependent variables. Using this function you can plot multiple dependent variables  	against x. Filename is the name of the saved pdf file
+	"""
+	fig = plt.figure(figsize=(6, 4))
+	ax = fig.add_subplot(1,1,1)
+	for i in range(len(f)):     
+		ax.plot(x, f[i])    
+	ax.set_xlabel(xlabel)
+	ax.set_ylabel(ylabel)
+	plt.savefig(filename)
     
 
 def ode_euler(x_start, x_end, h, y0, z0, f, g):
@@ -73,4 +83,14 @@ def ode_rk4(x_start, x_end, h, y0, z0, f, g):
         z[i+1] = z[i] + (l1 + 2.0 * l2 + 2.0 * l3 + l4) / 6.0
         
     return x, y, z
-        
+
+if __name__=="__main__":
+	x=np.linspace(0,10)
+	f=x**2
+	#print (x,f)
+	#a = np.exp(x)
+	#print (f.shape, a.shape)	
+	#plot(x,[f,a])	
+	#print(plot.__doc__)
+	plot_print(x,[f], 'test1.pdf')	
+	print(plot_print.__doc__)
