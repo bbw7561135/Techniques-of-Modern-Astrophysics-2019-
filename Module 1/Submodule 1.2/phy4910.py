@@ -29,7 +29,7 @@ def plot(x, f, xlabel="", ylabel="", labels=None, title=None):
     ax.set_ylabel(ylabel)
     plt.show()
 
-def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, dpi=600):
+def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, axv=None, dpi=600):
     """
     Print the plot with reasonable settings
     """
@@ -44,6 +44,9 @@ def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, dp
             ax.legend(labels, loc='center left', bbox_to_anchor=(1, 0.5))
         else:
             ax.legend(labels, title=title, loc='center left', bbox_to_anchor=(1, 0.5))
+    if axv is not None:
+        for item in axv:
+            plt.axvline(x=item, linestyle='--')
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     plt.savefig(filename)
