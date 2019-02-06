@@ -51,4 +51,6 @@ labels.append("{:0.2e}".format(Peq*1.3))
 labels.append("{:0.2e}".format(Peq*0.9))
 tlabels = tuple(labels)
 
-phy4910.plot_print(tau, [eta, eta2, eta3, eta4, eta5], filename, "$\\tau [23 min]$", "$\\eta [R_\\odot]$", tlabels, title="p0")
+dCephei = 5.36 * 24 * 60 / 23
+
+phy4910.plot_print(tau, [eta, eta2, eta3, eta4, eta5], filename, "$\\tau [23 min]$", "$\\eta [R_\\odot]$", tlabels, title="p0", axv=[dCephei])
