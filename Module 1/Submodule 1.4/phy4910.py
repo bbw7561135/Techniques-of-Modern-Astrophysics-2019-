@@ -10,7 +10,7 @@ plt.rcParams.update({'font.size':14})
 plt.rc('axes', labelsize=16)
 plt.rcParams.update({'figure.autolayout': True})
 
-def plot(x, f, xlabel="", ylabel="", labels=None, title=None):
+def plot(x, f, xlabel="", ylabel="", labels=None, title=None,  axv=None, noline=False):
     """
     Plot with reasonable settings
     """
@@ -19,17 +19,22 @@ def plot(x, f, xlabel="", ylabel="", labels=None, title=None):
     ax = fig.add_subplot(1,1,1)
     ax.grid(True)
     for item in f:
-        ax.plot(x, item)
+        if noline: ax.plot(x, item, ".")
+        else: ax.plot(x,item)
     if labels is not None:
         if title is None:
             ax.legend(labels, loc='center left', bbox_to_anchor=(1, 0.5))
         else:
             ax.legend(labels, title=title, loc='center left', bbox_to_anchor=(1, 0.5))
+    if axv is not None:
+        for item in axv:
+            plt.axvline(x=item, linestyle='--')
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     plt.show()
+    plt.close('all')
 
-def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, axv=None, dpi=600):
+def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, axv=None, dpi=600, noline=False):
     """
     Print the plot with reasonable settings
     """
@@ -38,7 +43,8 @@ def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, ax
     ax = fig.add_subplot(1,1,1)
     ax.grid(True)
     for item in f:
-        ax.plot(x, item)
+        if noline: ax.plot(x, item, ".")
+        else: ax.plot(x,item)
     if labels is not None:
         if title is None:
             ax.legend(labels, loc='center left', bbox_to_anchor=(1, 0.5))
@@ -50,6 +56,7 @@ def plot_print(x, f, filename, xlabel="", ylabel="", labels=None, title=None, ax
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     plt.savefig(filename)
+    plt.close('all')
 
 def ode_euler(x_start, x_end, h, y0, z0, f, g):
     """
