@@ -55,7 +55,7 @@ def j (eta, m, l, t, vrho, kappa, e):                               #Equation 4B
 #Functions for parameters
 
 #This function should probably be removed
-#It produces values equivalent to the alternat Vrho function.
+#It produces values equivalent to the alternate Vrho function.
 #Initially we wanted to use a dimensionless equation but it was much more intuitive to nondimensionalize afterwards
 # def getVrho (p,t):                                   #Equation 5       vrho
 #     return (gamma / (gamma - 1)) * p / t  - 4.0 * pi / 3  * (1 - 1 / gamma) ** 3  * (mu_i * mH / k) ** 4  * (a * G ** 3 * M0 ** 2) * t ** 3  
@@ -63,6 +63,8 @@ def j (eta, m, l, t, vrho, kappa, e):                               #Equation 4B
 def getVrho (p,t):                                                  #Equation 5     vrho
     
     """
+    This function will generate the current dimensionless density based on the pressure and temperature
+    
     p   - dimensionless pressure
     t   - dimensionless temperature
     
@@ -80,6 +82,8 @@ def getVrho (p,t):                                                  #Equation 5 
 def getE (vrho, t):                       #Equation 6       energy from nuclear reactions
     
     """
+    This function will generate the current dimensionless energy based on density and temperature
+    
     vrho   - dimensionless density
     t      - dimensionless temperature
     
@@ -109,6 +113,8 @@ def getE (vrho, t):                       #Equation 6       energy from nuclear 
 def getKappa (vrho, t):                      #Equation 7       Opacities
     
     """
+    This function will generate the current dimensionless opacity based on density and temperature
+    
     vrho  - dimensionless density
     t     - dimensionless temperature
     """
@@ -134,6 +140,8 @@ def getKappa (vrho, t):                      #Equation 7       Opacities
 #Integration  using 4th order runge kutta method
 def integrate(eta_start, eta_end, delta, m0, l0, p0, t0, f, g, h, i, j, stop = lambda eta, m, p, l, t, vrho, kappa, e,data:False , data = None):
     """
+    Integration of the 4(or 5) coupled differential equations used to generate our star model. Uses 4th order runge kutta method
+    
     eta_start - starting value of radius for integration
     eta_end   - final value of radius for integration
     delta     - step size for integration
@@ -260,7 +268,7 @@ def integrate(eta_start, eta_end, delta, m0, l0, p0, t0, f, g, h, i, j, stop = l
 
 def IsNaN(number):  
     """
-    this function will determine if an output is not a number
+    this function will determine if an input is not a number
     number - either a number or not a number
     
     """
