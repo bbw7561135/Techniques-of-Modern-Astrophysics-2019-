@@ -54,7 +54,7 @@ def j (eta, m, l, t, vrho, kappa, e):                               #Equation 4B
 
 #Functions for parameters
 
-#This function should probably removed
+#This function should probably be removed
 #It produces values equivalent to the alternat Vrho function.
 #Initially we wanted to use a dimensionless equation but it was much more intuitive to nondimensionalize afterwards
 # def getVrho (p,t):                                   #Equation 5       vrho
