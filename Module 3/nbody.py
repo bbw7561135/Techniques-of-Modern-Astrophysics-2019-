@@ -1,3 +1,5 @@
+
+#!/usr/bin/env python3
 from numpy import sqrt
 class particle:
 
@@ -49,17 +51,63 @@ class System:
 		with open(filename, "w") as f:
 			f.write(str(self))
 		return
+
 	@classmethod
 	def read(cls, filename):
 		with open(filename, "r") as f:
- 			N = int(f.readline())
+			N = int(f.readline())
 			t = float(f.readline())
 			G = float(f.readline())
 			parts = []
 			for i in range(N):
+				parts.append(particle.fromstring(f.readline()))
+		return cls(N, t, parts, G);
 
 
+	def accel_calc(self):
+		for i in range(self.N):
+			self.parts[i].acc = [0,0,0]
+		for i in range(self.N):
+			for j in range(i+1, self.N):
+				pi = self.parts[i]
+				pj = self.parts[j]
+				xd = pi.pos[0]-pj.pos[0]
+				yd = pi.pos[1]-pj.pos[1]
+				zd = pi.pos[2]-pj.pos[2]
+				r3 = pi.distance(pj)**3.0
+				pi.acc[0] += -self.G*pj.m*xd/r3
+				pj.acc[0] += self.G*pi.m*xd/r3
+
+				pi.acc[1] += -self.G*pj.m*yd/r3
+				pj.acc[1] += self.G*pi.m*yd/r3
+
+				pi.acc[2] += -self.G*pj.m*zd/r3
+				pj.acc[2] += self.G*pi.m*zd/r3
 		return
+
+	def all_x(self):
+		x = []
+		for i in range(self.N):
+			x.append(self.parts[i].pos[0])
+		return x
+
+	def all_y(self):
+		x = []
+		for i in range(self.N):
+			x.append(self.parts[i].pos[1])
+		return x
+
+	def all_z(self):
+		x = []
+		for i in range(self.N):
+			x.append(self.parts[i].pos[2])
+		return x
+
+
+
+
+
+
 if __name__=="__main__":
 	comet = particle(1.0, [1,1,1], [5489,83,92])
 	baseball = particle(1e-8, [-7,-4,8], [3.14,7,38])
@@ -67,3 +115,6 @@ if __name__=="__main__":
 	earth = particle(0.1, [0.9,0,0], [0,-1.2,0])
 	solar = System(4,0,[comet,baseball, sun, earth])
 	solar.write("solar.txt")
+	solar.accel_calc()
+	solar2 = System.read("solar.txt")
+	solar2.write("solar2.txt")

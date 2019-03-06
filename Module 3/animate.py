@@ -13,7 +13,7 @@ ax = fig.add_subplot(111)#, projection='3d')
 #ax.axis('off')
 ax.set_aspect('equal')
 
-s = system.read(argv[1])
+s = System.read(argv[1])
 x = s.all_x()
 y = s.all_y()
 z = s.all_z()
@@ -25,7 +25,7 @@ line, = ax.plot(x, y, color="black", marker="o", markersize=2, alpha=1, linestyl
 
 def update(fname):
     #sleep(1)
-    s = system.read(fname)
+    s = System.read(fname)
     x = s.all_x()
     y = s.all_y()
     z = s.all_z()
