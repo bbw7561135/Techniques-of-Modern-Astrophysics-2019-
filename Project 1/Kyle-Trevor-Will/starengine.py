@@ -1,3 +1,8 @@
+
+# coding: utf-8
+
+# In[46]:
+
 from numpy import *
 from matplotlib.pyplot import *
 from IPython.display import clear_output
@@ -54,8 +59,8 @@ def j (eta, m, l, t, vrho, kappa, e):                               #Equation 4B
 
 #Functions for parameters
 
-#This function should probably be removed
-#It produces values equivalent to the alternate Vrho function.
+#This function should probably removed
+#It produces values equivalent to the alternat Vrho function.
 #Initially we wanted to use a dimensionless equation but it was much more intuitive to nondimensionalize afterwards
 # def getVrho (p,t):                                   #Equation 5       vrho
 #     return (gamma / (gamma - 1)) * p / t  - 4.0 * pi / 3  * (1 - 1 / gamma) ** 3  * (mu_i * mH / k) ** 4  * (a * G ** 3 * M0 ** 2) * t ** 3  
@@ -63,8 +68,6 @@ def j (eta, m, l, t, vrho, kappa, e):                               #Equation 4B
 def getVrho (p,t):                                                  #Equation 5     vrho
     
     """
-    This function will generate the current dimensionless density based on the pressure and temperature
-    
     p   - dimensionless pressure
     t   - dimensionless temperature
     
@@ -82,8 +85,6 @@ def getVrho (p,t):                                                  #Equation 5 
 def getE (vrho, t):                       #Equation 6       energy from nuclear reactions
     
     """
-    This function will generate the current dimensionless energy based on density and temperature
-    
     vrho   - dimensionless density
     t      - dimensionless temperature
     
@@ -113,8 +114,6 @@ def getE (vrho, t):                       #Equation 6       energy from nuclear 
 def getKappa (vrho, t):                      #Equation 7       Opacities
     
     """
-    This function will generate the current dimensionless opacity based on density and temperature
-    
     vrho  - dimensionless density
     t     - dimensionless temperature
     """
@@ -140,8 +139,6 @@ def getKappa (vrho, t):                      #Equation 7       Opacities
 #Integration  using 4th order runge kutta method
 def integrate(eta_start, eta_end, delta, m0, l0, p0, t0, f, g, h, i, j, stop = lambda eta, m, p, l, t, vrho, kappa, e,data:False , data = None):
     """
-    Integration of the 4(or 5) coupled differential equations used to generate our star model. Uses 4th order runge kutta method
-    
     eta_start - starting value of radius for integration
     eta_end   - final value of radius for integration
     delta     - step size for integration
@@ -268,7 +265,7 @@ def integrate(eta_start, eta_end, delta, m0, l0, p0, t0, f, g, h, i, j, stop = l
 
 def IsNaN(number):  
     """
-    this function will determine if an input is not a number
+    this function will determine if an output is not a number
     number - either a number or not a number
     
     """
@@ -301,9 +298,8 @@ def STOP (eta, m, p, l, t, vrho, kappa, e,data):
     
 #Below are two functions to find the specific t0 value that will create the necessary boundary conditions for our
 #star model given some p0 value. The integration of these four coupled equations creates a very irregular pattern
-#in the the final results and the bisection method (Findt0) often will not work to find the correct value.
+#in the final results and the bisection method (Findt0) often will not work to find the correct value.
 #A second method used was to try every possible digit in decreasing decimal places to see if the sign changes
-#This method also did not work very often.
 
 def Findt0 (t1,t2, eta_start, eta_end, delta, m0, l0, p0, f,g,h,i,j,stop = STOP):       #find t0 through bisection method
     
@@ -361,21 +357,21 @@ def Findt0 (t1,t2, eta_start, eta_end, delta, m0, l0, p0, f,g,h,i,j,stop = STOP)
 
 
 
-def Findt02(N, eta_start, eta_end, delta, m0, l0, p0, t0, f,g,h,i,j,stop = STOP):        
+def Findt02(dec, N,  eta_start, eta_end, delta, m0, l0, p0, t0, f,g,h,i,j,stop = STOP):        
     """
     An alternate procedure to find some information about where the true value of t0 is
     A second method that will try every possible digit in decreasing decimal places to see if the sign of the final
     t value changes.
     
-    
-    N         - 10^N will be the first decimal place checked
+    N         - The number of digits to search for
+    dec       - 10^dec will be the first decimal place checked
     eta_start - starting value of radius for integration
     eta_end   - final value of radius for integration
     delta     - step size for integration
     m0        - initial dimensionless mass
     l0        - initial dimensionless luminosity
     p0        - initial dimensionless pressure
-    t0        - initial dimensionless temperature
+    t0        - initial guess at dimensionless temperature, must be lower than the actual value
     f         - Equation 1       d(p)/d(eta)
     g         - Equation 2       d(m)/d(eta)
     h         - Equation 3       d(l)/d(eta)
@@ -387,27 +383,29 @@ def Findt02(N, eta_start, eta_end, delta, m0, l0, p0, t0, f,g,h,i,j,stop = STOP)
     
     
     
-    powers10 = zeros(12+N)                                                           #will be a list of powers of 10 decreasing
+    powers10 = zeros(N+dec)                                                           #will be a list of powers of 10 decreasing
     digits = list(range(10))                                                         #a list of all digits
-    for b in range(12+N):                                                            #generate the powers of 10 
-        powers10[b] = 10**(N-b)                                                      #N selects the highest power
-#     model = integrate(eta_start, eta_end, delta, m0, l0, p0, t0,f,g,h,i,j,stop = STOP) #find final temp when the initial guess t0 is used
-#     t_f = model[4][-1]
+    for b in range(N+dec):                                                            #generate the powers of 10 
+        powers10[b] = 10**(dec-b)                                                      #dec selects the highest power
+    model = integrate(eta_start, eta_end, delta, m0, l0, p0, t0,f,g,h,i,j,stop = STOP) #find final temp when the initial guess t0 is used
+    t_f1 = model[4][-1]
+    t_f2 = model[4][-1]
     ttemp = t0                                                                       
     for b in powers10:                                                             #for each power of 10
         for dig in digits:                                                         #for each digit
             model = integrate(eta_start, eta_end, delta, m0, l0, p0, ttemp + b*dig,f,g,h,i,j,stop = STOP)  #find the final temp when the current
                                                                                                            #guess + some digit in some decimal place is used
-            t_f = model[4][-1]
-            if t_f > 0 and t_f != ttemp + b*dig:                         #the sign for t_f should initially be negative, it switches when the value is too high
-                print (t_f)                                              #if the guess is extremely low the integration is not carried out the second condition ignores this integration
-                ttemp += b*(dig-1)                                       #add the previous used digit in the current decimal place
+            t_f1 = model[4][-1]
+            if t_f1 * t_f2 < 0 and t_f1 != ttemp + b*dig:               #the sign for t_f should switche when the value is too high
+                print (t_f1)                                            #if the guess is extremely low the integration is not carried out the second condition ignores this integration
+                ttemp += b*(dig-1)                                      #add the previous used digit in the current decimal place
                 print (b,dig,ttemp)
-                break                                                    #don't attempt the remaining digits
-            elif dig == 9 and t_f != ttemp + b*dig:                      #if none of the digits switched the sign then it must be 9
-                print (t_f)
+                break                                                   #don't attempt the remaining digits
+            elif dig == 9 and t_f1 != ttemp + b*dig:                    #if none of the digits switched the sign then it must be 9
+                print (t_f1)
                 ttemp += b*(dig)
                 print (b,dig,ttemp)
+            t_f2 = t_f1                                                 #save t_f for sign comparison on next run
     print('ttemp =',ttemp)
     return ttemp
     
@@ -418,24 +416,34 @@ def Findt02(N, eta_start, eta_end, delta, m0, l0, p0, t0, f,g,h,i,j,stop = STOP)
 #set p0 = some value, then try to find t0 that will have both p = 0 and t = 0 at the same radius.
 
 eta_start = 0.001                                                      #starting radius for integration
-eta_end = 5                                                            #end radius for integration
+eta_end = 20                                                           #end radius for integration
 delta = 0.001                                                          #step size for integration
 
 #for boundary conditions
-m0 = 0.001                                                             #initial dimensionless mass for integration
-l0 = 0.001                                                             #initial dimensionless luminosity for integration
-p0 = 4.586e3                                                           #initial dimensionless pressure for integration, vary this for different models
+m0 = 0.001                                                        #initial dimensionless mass for integration
+l0 = 0.001                                                        #initial dimensionless luminosity for integration
+p0 = 20                                                           #initial dimensionless pressure for integration, vary this for different models
 
 #Switch between the next three lines to change how t0 is determined
 
-t0 = 4.06363084                                                         #just assign a number and perform integration only once
-#t0 =Findt0(4.0,4.1, eta_start, eta_end, delta, m0, l0, p0, f,g,h,i,j)#,stop = STOP)   #find t0 using bisection method#
-#t0 =Findt02(0, eta_start, eta_end, delta, m0, l0, p0, 0, f,g,h,i,j)#,stop = STOP)    #find t0 using digit building method
+t0 = 6.775686710772635                                                                       #just assign a number and perform integration only once
+#t0 =Findt0(6,7.5, eta_start, eta_end, delta, m0, l0, p0, f,g,h,i,j)#,stop = STOP)           #find t0 using bisection method
+#t0 =Findt02(1,18, eta_start, eta_end, delta, m0, l0, p0, t0, f,g,h,i,j)#,stop = STOP)       #find t0 using digit building method
+
+# Just to show Findt02 works sometimes, use p0 = 2.85e2 and X = 0.615 Y = 0.364
+# Findt0 with initial guess (2.1,2.3) returns t0 = 2.212524933810346 but with any other guess that is too far away
+# say (2,2.5) it wont work, so you need Findt02 to get an initial guess
+# Findt0 returns a more precise answer
+# Findt02 returns t0 = 2.21252493383
 
 
-# # From here until line 481 the code is used to loop the input for t0 if you want to repeatedly guess at t0 very quickly (useful for guessing values manually)
+savetxt('t0.txt', array(t0).reshape(1,))                         #Print statements are limited to 12 decimal places when a number is converted into a string, saving it allows all digits to be retrieved
+
+
+# # From here until line 492 the code is used to loop the input for t0 if you want to repeatedly guess at t0 very quickly (useful for guessing values manually)
 # # Uncomment this code if you want to enter values manually.
 # print(t0)
+
 
 # Flag = True                                                      #keep looping if true
 # while Flag:
@@ -494,7 +502,7 @@ t0 = 4.06363084                                                         #just as
 
 #Comment out the rest of this code if you are entering t0 values manually
 
-#Use the t0 value you have found and generate the model
+#Use the t0 value you have found and generate the model and save the data and plots to a appropriate files
 
 print('t0 = ',t0)
 
@@ -536,16 +544,20 @@ ax.set_xlabel("$\\eta$")
 ax.set_ylabel("$\\varrho$")
 
 ax = fig.add_subplot(3,2,6)
+ax.axis('off')
 
-text(0.1,0.8,'initial p: ' + str(p[0]))
-text(0.1,0.7,'final t: ' + str(t[0]))
+text(0.1, -0.1,'final p: ' + str(p[-1]))
+text(0.1, 0.0,'final t :' + str(t[-1]))
+text(0.1,0.1,'final eta:' + str(eta[-1]) + ' not necessarily radius')
+text(0.1,0.2,'final m:' + str(m[-1]))
+text(0.1,0.3,'final l:' + str(l[-1]))
+text(0.1,0.4,'final vrho:' + str(vrho[-1]))
+text(0.1,0.5,'initial p: ' + str(p[0]))
+text(0.1,0.6,'initial t: ' + str(t[0]))
+text(0.1,0.7,'Hydrogen (X):' + str(X))
+text(0.1,0.8,'Helium (Y):' +str(Y))
+text(0.1,0.9,'Metals (Z):' +str(round(Z,3)))
 
-text(0.1,0.1,'final p: ' + str(p[-1]))
-text(0.1,0.2,'final t :' + str(t[-1]))
-text(0.1,0.3,'final eta:' + str(eta[-1]) + ' not necessarily radius')
-text(0.1,0.4,'final m:' + str(m[-1]))
-text(0.1,0.5,'final l:' + str(l[-1]))
-text(0.1,0.6,'final vrho:' + str(vrho[-1]))
 
 file_name = str(round(m[-1],3)) + 'M0 ' +'p0 ' + str(round(p[0],3)) +' t0 ' + str(round(t[0],3)) #generate an appropriate file name
 
@@ -553,6 +565,17 @@ file_name = str(round(m[-1],3)) + 'M0 ' +'p0 ' + str(round(p[0],3)) +' t0 ' + st
 savefig( file_name +' Model Plots.pdf', dpi = 1000)
 show()
 
-savetxt( file_name +' M0 Data.txt', Data.T, header = 'eta' + 21 * ' ' + 'm' + 24 * ' ' + 'p' + 24* ' ' +'l' + 24 * ' ' + 't' + 24* ' ' + 'vrho')
+savetxt( file_name +' M0 Data.txt', Data.T, header = 'eta' + 21 * ' ' + 'm' + 24 * ' ' + 'p' + 24* ' ' +'l' + 24 * ' ' + 't' + 24* ' ' + 'vrho' + 24 * ' ' +'X = '+ str(X) +' Y = ' + str(Y) + ' Z = '+str(Z))
 
 print('final p: ' , p[-1], 'final t :', t[-1], 'final eta:', eta[-1], 'final m:', m[-1], 'final l:', l[-1], 'final vrho:', vrho[-1])
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
+
