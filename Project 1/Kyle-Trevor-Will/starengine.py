@@ -568,14 +568,3 @@ show()
 savetxt( file_name +' M0 Data.txt', Data.T, header = 'eta' + 21 * ' ' + 'm' + 24 * ' ' + 'p' + 24* ' ' +'l' + 24 * ' ' + 't' + 24* ' ' + 'vrho' + 24 * ' ' +'X = '+ str(X) +' Y = ' + str(Y) + ' Z = '+str(Z))
 
 print('final p: ' , p[-1], 'final t :', t[-1], 'final eta:', eta[-1], 'final m:', m[-1], 'final l:', l[-1], 'final vrho:', vrho[-1])
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
