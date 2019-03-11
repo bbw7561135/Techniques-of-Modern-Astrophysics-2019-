@@ -1,11 +1,12 @@
 from nbody import *
 
-solar = System.read("solar_system.dat")
+solar = System.read("random.txt")
 
 t_end = 5.0
 dt = 1e-3
 dt_out = 0.01
 dt_log = 0.01
+
 
 solar.accel_calc()
 
@@ -24,6 +25,7 @@ while t < t_end:
 		part.vel[2] += 0.5*part.acc[2]*dt
 
 	solar.accel_calc()
+
 	for part in solar.parts:
 
 		part.vel[0] += 0.5*part.acc[0]*dt
