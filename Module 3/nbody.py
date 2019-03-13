@@ -1,8 +1,5 @@
-
-#!/usr/bin/env python3
 from math import sqrt
 from struct import unpack, pack
-from array import array
 
 class particle:
 
@@ -68,10 +65,25 @@ class System:
 			f.write(Nb)
 			f.write(tb)
 			
-			arr = array('f')
-			for i in range(self.N):
-				arr.fromlist([self.parts[i].m, self.parts[i].pos[0], self.parts[i].pos[1], self.parts[i].pos[2], self.parts[i].vel[0], self.parts[i].vel[1], self.parts[i].vel[2]])
-			arr.tofile(f)
+			for p in self.parts:
+				m = pack('<f', p.m)
+				x = pack('<f', p.pos[0])
+				y = pack('<f', p.pos[1])
+				z = pack('<f', p.pos[2])
+				vx = pack('<f', p.vel[0])
+				vy = pack('<f', p.vel[1])
+				vz = pack('<f', p.vel[2])
+				ID = pack('<i', p.ID)
+				f.write(m)
+				f.write(x)
+				f.write(y)
+				f.write(z)
+				f.write(vx)
+				f.write(vy)
+				f.write(vz)
+				f.write(ID)
+				
+				
 
 	@classmethod
 	def read_ascii(cls, filename):
@@ -90,20 +102,19 @@ class System:
 			N = unpack('<i', f.read(4))[0]
 			t = unpack('<d', f.read(8))[0]
 			
-			arr = array('f')
-			arr.fromfile(f, N * 7)
-			
 			parts = []
 			for i in range(N):
-				m = arr[7 * i + 0]
-				x = arr[7 * i + 1]
-				y = arr[7 * i + 2]
-				z = arr[7 * i + 3]
-				vx = arr[7 * i + 4]
-				vy = arr[7 * i + 5]
-				vz = arr[7 * i + 6]
+				m = unpack('<f', f.read(4))[0]
+				x = unpack('<f', f.read(4))[0]
+				y = unpack('<f', f.read(4))[0]
+				z = unpack('<f', f.read(4))[0]
+				vx = unpack('<f', f.read(4))[0]
+				vy = unpack('<f', f.read(4))[0]
+				vz = unpack('<f', f.read(4))[0]
+				ID = unpack('<i', f.read(4))[0]
 				
-				parts.append(particle(m, [x, y, z], [vx, vy, vz]))
+				parts.append(particle(m, [x, y, z], [vx, vy, vz], ID))
+				
 		return cls(N, t, parts)
 		
 				
@@ -153,12 +164,7 @@ class System:
 
 
 if __name__=="__main__":
-	comet = particle(1.0, [1,1,1], [5489,83,92])
-	baseball = particle(1e-8, [-7,-4,8], [3.14,7,38])
-	sun = particle(0.9, [-0.1,0,0], [0,0.133,0])
-	earth = particle(0.1, [0.9,0,0], [0,-1.2,0])
-	solar = System(4,0,[comet,baseball, sun, earth])
-	solar.write("solar.txt")
-	solar.accel_calc()
-	solar2 = System.read("solar.txt")
-	solar2.write("solar2.txt")
+
+	test = System.read("random.dat")
+	print(test.parts[0].pos[2])
+	test.write("random2.dat")
