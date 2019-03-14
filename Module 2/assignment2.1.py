@@ -66,11 +66,9 @@ sources = iraffind(image_detection - median)
 positions = (sources['xcentroid'], sources['ycentroid'])
 apertures = CircularAperture(positions, r = 4.0)
 
-# failed attempt to convert/enter RA/DEC values for centre of cluster
-# c = SkyCoord(ra=(18, 36, 23.94), dec=[23,54,17.1,0])
-# yc = c.dec.degree
-# xc = c.ra.dec
-# pc = w.all_world2pix(xc,yc)
+pc = w.all_world2pix(279.09975,-23.90475,1)
+pb = w.all_world2pix(279.062738,-23.9038194,1)
+print(pb)
 
 fig = plt.figure(figsize=(8,8))
 ax = fig.add_subplot(111, projection = w)
@@ -78,13 +76,15 @@ ax.imshow(transform(image_detection), cmap='gray_r', origin='lower')
 # ax.colorbar()
 apertures.plot(color='blue', lw=1.5, alpha=0.5)
 plt.savefig("apertures.pdf")
-print(ax.get_ylim(),ax.get_xlim())
-print(ax.get_yticks(),ax.get_xticks())
+# print(ax.get_ylim(),ax.get_xlim())
+# print(ax.get_yticks(),ax.get_xticks())
 # print(ax.get_yaxis_transform(),ax.get_xaxis_transform())
 plt.xlabel('Right Ascension')
 plt.ylabel('Declination')
-ax.axhline(y=3960, linestyle='--', color='black')
-ax.axvline(x=3300, linestyle='--', color='black')
+# ax.axhline(y=3960, linestyle='--', color='black')
+# ax.axvline(x=3300, linestyle='--', color='black')
+ax.axhline(y=pc[1], linestyle='--', color='black')
+ax.axvline(x=pc[0], linestyle='--', color='black')
 plt.savefig('assignment2.1b.pdf')
 # plt.show()
 plt.close()
@@ -94,7 +94,7 @@ image_i = fits.open("hst_12311_08_wfc3_uvis_f814w_drz.fits")['SCI'].data
 
 phot_table_u = aperture_photometry(image_u, apertures)
 phot_table_i = aperture_photometry(image_i, apertures)
-print(phot_table_u['aperture_sum'][0], phot_table_i['aperture_sum'][0])
+# print(phot_table_u['aperture_sum'][0], phot_table_i['aperture_sum'][0])
 
 m_u = -2.5 * np.log10(phot_table_u['aperture_sum'])
 m_i = -2.5 * np.log10(phot_table_i['aperture_sum'])
@@ -111,7 +111,7 @@ plt.savefig("assignment2-colour_mag.pdf")
 plt.close()
 
 pos = np.swapaxes(np.asarray(positions),0,1)
-print(pos.shape)
+# print(pos.shape)
 
 radec = w.all_pix2world(pos, 1)
 # print(radec)
@@ -125,3 +125,49 @@ astro_table[5].name = 'm_i'
 astro_table[6].name = 'm_i-m_u'
 
 astro_table.write("assignment2-table.txt", format='ascii.fixed_width', overwrite=True)
+
+# image_detection_u = fits.open("hst_12193_04_wfc3_uvis_f395n_drz.fits")['SCI'].data
+# image_detection_b = fits.open("hst_12193_04_wfc3_uvis_f467m_drz.fits")['SCI'].data
+# image_detection_y = fits.open("hst_12193_04_wfc3_uvis_f547m_drz.fits")['SCI'].data
+#
+bx = int(pb[0])
+by = int(pb[1])
+print(bx,by)
+
+# image_detection_u = image_detection_u[bx-200:bx+200,by-50:by+50]
+# image_detection_b = image_detection_b[bx-200:bx+200,by-50:by+50]
+# image_detection_y = image_detection_y[bx-200:bx+200,by-50:by+50]
+#
+# image_detection_u = transform(image_detection_u)
+# image_detection_b = transform(image_detection_b)
+# image_detection_y = transform(image_detection_y)
+# mean_u, median_u, std_u = sigma_clipped_stats(image_detection_u, sigma=3.0)
+# mean_b, median_b, std_b = sigma_clipped_stats(image_detection_b, sigma=3.0)
+# mean_y, median_y, std_y = sigma_clipped_stats(image_detection_y, sigma=3.0)
+#
+# image_detection_um = image_detection_u - median_u
+# image_detection_ym = image_detection_y - median_y
+# image_detection_bm = image_detection_b - median_b
+#
+# image = make_lupton_rgb(image_detection_ym, image_detection_bm, image_detection_um, minimum=0.002, Q=0, stretch=0.3, filename="m-22-blackhole.pdf")
+# fig = plt.figure(figsize=(8,8))
+# ax = fig.add_subplot(111, projection = w)
+# ax.imshow(image, origin='lower')
+# ax.set_xlabel("Right Ascenion")
+# ax.set_ylabel("Declination")
+# plt.savefig("m-22-blackhole.pdf")
+
+image_detection = fits.open("hst_12311_08_wfc3_uvis_total_drz.fits")['SCI'].data
+
+image2 = image_detection[6000:6600,2900:3000]
+fig = plt.figure(figsize=(8,8))
+ax = fig.add_subplot(111, projection = w)
+ax.imshow(transform(image2), cmap='gray_r', origin='lower')
+# ax.colorbar()
+# apertures.plot(color='blue', lw=1.5, alpha=0.5)
+plt.savefig("m-22-blackhole.pdf")
+
+fig = plt.figure(figsize=(8,8))
+ax = fig.add_subplot(111, projection = w)
+ax.imshow(transform(image_detection), cmap='gray_r', origin='lower')
+plt.show()
